@@ -250,8 +250,7 @@ class SketchFieldDemo extends React.Component {
 
     };
     _processSprite() {
-        console.log('process Sprite')
-        this._sketch._addAnimation();
+        this._sketch.addAnimation('/public/globe.gif', { spriteUrl: '/public/globe.png' });
     }
 
     render = () => {

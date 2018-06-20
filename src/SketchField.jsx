@@ -15,19 +15,22 @@ import Tool from './tools'
 
 const fabric = require('fabric').fabric;
 
+function FabricAnimationException(message) {
+    this.message = message;
+    this.name = 'AnimationException';
+}
+
 fabric.Sprite = fabric.util.createClass(fabric.Image, {
 
     type: 'sprite',
-
-    spriteWidth: 50,
-    spriteHeight: 72,
     spriteIndex: 0,
 
     initialize: function (element, options) {
         options || (options = {});
 
-        options.width = this.spriteWidth;
-        options.height = this.spriteHeight;
+        // sprite sizes should be the original image dimensions
+        options.width = options.spriteWidth;
+        options.height = options.spriteHeight;
 
         this.callSuper('initialize', element, options);
 
@@ -43,6 +46,10 @@ fabric.Sprite = fabric.util.createClass(fabric.Image, {
 
     createSpriteImages: function () {
         this.spriteImages = [];
+
+        if (!this._element) {
+            throw new FabricAnimationException('invalid element:' + this._element);
+        }
 
         var steps = this._element.width / this.spriteWidth;
         for (var i = 0; i < steps; i++) {
@@ -208,27 +215,49 @@ class SketchField extends PureComponent {
 
     addAnimation = (dataUrl, options = {}) => {
         let canvas = this._fc;
-        console.log(fabric)
         fabric.Object.prototype.originX = fabric.Object.prototype.originY = 'center';
         fabric.Object.prototype.transparentCorners = false;
-        var url = '/public/sprite.png';
 
-        fabric.Sprite.fromURL(url, (oSpriteImg) => {
-            oSpriteImg.set({
-                left: (canvas.getWidth() - oSpriteImg.width * 0.5),
-                top: (canvas.getHeight() - oSpriteImg.height * 0.5),
-                scale: 0.9
-            });
-            canvas.add(oSpriteImg);
-            setTimeout(function () {
-                oSpriteImg.play();
-            }, 100);
+        if (!dataUrl || !options.spriteUrl) {
+            throw new FabricAnimationException('invalid data or sprite url');
+        }
+
+        if (!dataUrl.endsWith('.gif')) {
+            throw new FabricAnimationException('invalid data url, does not end with gif');
+        }
+
+        // load the base image as we need to know the original dimensions
+        fabric.Image.fromURL(dataUrl, (oBaseImg) => {
+            // load the base image to get the size parameters
+            var spriteUrl = dataUrl + '.png';
+            fabric.Sprite.fromURL(spriteUrl, (oSpriteImg) => {
+                var x = (canvas.getWidth() - oSpriteImg.width * 0.5);
+                var y = (canvas.getHeight() - oSpriteImg.height * 0.5);
+                var scale = 0.9;
+                if ('x' in options && 'y' in options) {
+                    x = options.x;
+                    y = options.y;
+                }
+
+                if ('scale' in options) {
+                    scale = options.scale;
+                }
+
+                oSpriteImg.set({
+                    left: x,
+                    top: y,
+                    scale: scale
+                });
+                canvas.add(oSpriteImg);
+                setTimeout(function () {
+                    oSpriteImg.play();
+                }, 100);
+            }, { spriteWidth: oBaseImg.width, spriteHeight: oBaseImg.height });
+            (function render() {
+                canvas.renderAll();
+                fabric.util.requestAnimFrame(render);
+            })();
         });
-
-        (function render() {
-            canvas.renderAll();
-            fabric.util.requestAnimFrame(render);
-        })();
     };
 
 
