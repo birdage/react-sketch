@@ -229,12 +229,18 @@ class SketchField extends PureComponent {
         // load the base image as we need to know the original dimensions
         fabric.Image.fromURL(dataUrl, (oBaseImg) => {
             // load the base image to get the size parameters
-            var spriteUrl = dataUrl + '.png';
+            var spriteUrl = options.spriteUrl;
+            if (!spriteUrl.endsWith('.png')) {
+                throw new FabricAnimationException('invalid sprite url');
+            }
+
             fabric.Sprite.fromURL(spriteUrl, (oSpriteImg) => {
+                //used to position the sprite if no input is provided
                 var x = (canvas.getWidth() - oSpriteImg.width * 0.5);
                 var y = (canvas.getHeight() - oSpriteImg.height * 0.5);
-                var scale = 0.9;
+                var scale = 1;
                 if ('x' in options && 'y' in options) {
+                    // center the image on the co-ors, using `center` above
                     x = options.x;
                     y = options.y;
                 }
