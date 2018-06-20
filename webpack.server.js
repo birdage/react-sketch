@@ -13,7 +13,7 @@ const NoEmitOnErrorsPlugin = require('webpack/lib/NoEmitOnErrorsPlugin');
 const HotModuleReplacementPlugin = require('webpack/lib/HotModuleReplacementPlugin');
 
 const srcPath = path.join(__dirname, 'src');
-const publicPath = path.join(__dirname, 'public');
+//const publicPath = path.join(__dirname, 'public');
 const examplesPath = path.join(__dirname, 'examples');
 
 const port = 23000;
@@ -54,7 +54,7 @@ const config = {
         lazy: false,
         port: port,
         hot: true,
-        publicPath: publicPath
+        //publicPath: publicPath
     },
     module: {
         loaders: [
