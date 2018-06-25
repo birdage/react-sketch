@@ -258,7 +258,7 @@ class SketchField extends PureComponent {
                 setTimeout(function () {
                     oSpriteImg.play();
                 }, 100);
-            }, { spriteWidth: oBaseImg.width, spriteHeight: oBaseImg.height });
+            }, { animationSrc: dataUrl, spriteWidth: oBaseImg.width, spriteHeight: oBaseImg.height });
             (function render() {
                 canvas.renderAll();
                 fabric.util.requestAnimFrame(render);
