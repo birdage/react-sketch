@@ -60,7 +60,7 @@
     "eslint": "^4.16.0",
     "eslint-loader": "^1.9.0",
     "eslint-plugin-react": "^7.6.1",
-    "fabric": "git://github.com/birdage/fabric.js.git#9068c2b77376a191ea904f5f317b38a1c39c484c",
+    "fabric": "git://github.com/birdage/fabric.js.git#b85f5175a7978b4132d702a9dd25ce5795f0cdda",
     "flexboxgrid": "^6.3.1",
     "html-webpack-plugin": "^2.30.1",
     "karma": "^2.0.0",
